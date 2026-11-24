@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .register-container {
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 40px 0;
+    }
+    .register-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: none;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+    /* Matching the Blue Header from Login Page */
+    .register-header {
+        background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+        padding: 30px;
+        text-align: center;
+        color: white;
+    }
+    .form-control:focus, .form-select:focus {
+        box-shadow: none;
+        border-color: #0d6efd;
+    }
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+        color: #6c757d;
+    }
+    .form-control, .form-select {
+        border-left: none;
+        background-color: #f8f9fa;
+    }
+    .btn-register {
+        background: linear-gradient(45deg, #0d6efd, #0056b3);
+        border: none;
+        padding: 12px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="register-container">
+    <div class="col-md-5">
+        <div class="card register-card">
+            <div class="register-header">
+                <i class="fa-solid fa-user-plus fa-3x mb-2"></i>
+                <h4 class="fw-bold m-0">Create Account</h4>
+                <p class="small opacity-75 mb-0">Join our community today</p>
+            </div>
+
+            <div class="card-body p-4">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} text-center py-2 text-small shadow-sm border-0 mb-4">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form action="/register" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">FULL NAME</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" name="name" class="form-control" placeholder="John Doe" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">EMAIL ADDRESS</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                            <input type="email" name="email" class="form-control" placeholder="name@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">PASSWORD</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" name="password" class="form-control" placeholder="Create a password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold">I WANT TO...</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-hand-holding-heart"></i></span>
+                            <select name="role" class="form-select">
+                                <option value="donor">Donate Clothes</option>
+                                <option value="beneficiary">Request Help</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-primary btn-register text-white rounded-pill">
+                            Register Now
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-muted small">
+                            Already have an account? 
+                            <a href="/login" class="text-decoration-none fw-bold text-primary">Sign In</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

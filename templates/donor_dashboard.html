@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* --- HEADER SECTION (Green Theme) --- */
+    .dashboard-header {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); /* Fresh Green Gradient */
+        color: white;
+        padding: 80px 20px 100px 20px;
+        border-radius: 0 0 50px 50px;
+        margin-bottom: -60px; /* Pulls content UP */
+        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        text-align: center;
+        position: relative;
+    }
+
+    /* --- CARDS --- */
+    .glass-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: none;
+        overflow: hidden;
+        margin-bottom: 30px;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .card-header-custom {
+        background: #f8f9fa;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        font-weight: 700;
+        color: #0f5132; /* Dark Green text */
+    }
+
+    /* Form Inputs */
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        background-color: #fcfcfc;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #38ef7d;
+        box-shadow: 0 0 0 0.2rem rgba(56, 239, 125, 0.25);
+    }
+
+    /* Submit Button (Green Theme) */
+    .btn-donate {
+        background: linear-gradient(45deg, #11998e, #38ef7d);
+        border: none;
+        color: white;
+        font-weight: bold;
+        padding: 12px;
+        border-radius: 10px;
+        transition: all 0.3s;
+        width: 100%;
+    }
+    .btn-donate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+    }
+
+    /* --- TABLE STYLING --- */
+    .table thead th {
+        background-color: #f8f9fa;
+        color: #555;
+        font-weight: 600;
+        border: none;
+        padding-left: 20px;
+    }
+    .table td {
+        vertical-align: middle;
+        padding: 15px 20px;
+    }
+
+    /* Driver Notification Box */
+    .driver-alert {
+        background-color: #e8f5e9; /* Light Green */
+        border: 1px solid #c8e6c9;
+        color: #2e7d32;
+        padding: 10px 15px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    /* Stats Box */
+    .stat-box {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border-radius: 15px;
+        padding: 15px 40px;
+        display: inline-block;
+        margin: 0 10px;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="dashboard-header">
+    <h1 class="fw-bold mb-4"><i class="fa-solid fa-gift me-2"></i> Donor Dashboard</h1>
+    
+    <div class="d-flex justify-content-center">
+        <div class="stat-box">
+            <h3 class="fw-bold m-0">{{ donations|length }}</h3>
+            <small>Total Donations</small>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="glass-card">
+                <div class="card-header-custom">
+                    <i class="fa-solid fa-shirt text-success me-2"></i> Donate Clothes
+                </div>
+                <div class="p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">ITEM TYPE</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-tags text-muted"></i></span>
+                                <select name="item" class="form-select">
+                                    <option>T-Shirt</option>
+                                    <option>Jeans</option>
+                                    <option>Blanket</option>
+                                    <option>Jackets</option>
+                                    <option>Shoes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">QUANTITY</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="fa-solid fa-layer-group text-muted"></i></span>
+                                    <input type="number" name="quantity" class="form-control" value="1" min="1" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">PHOTO</label>
+                                <input type="file" name="image" class="form-control form-control-sm" style="padding: 9px;">
+                            </div>
+                        </div>
+
+                        <h6 class="mt-4 mb-3 text-uppercase small fw-bold text-success border-bottom pb-2">Pickup Details</h6>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">ADDRESS</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-location-dot text-muted"></i></span>
+                                <input type="text" name="address" placeholder="e.g. 123 Main St, City" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-muted">PHONE</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-phone text-muted"></i></span>
+                                <input type="text" name="phone" placeholder="e.g. 0300-1234567" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-donate shadow">Schedule Pickup</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="glass-card h-100">
+                <div class="card-header-custom">
+                    <i class="fa-solid fa-clock-rotate-left text-success me-2"></i> Your Donation History
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Item Details</th>
+                                <th>Status / Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in donations %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle p-2 me-3 text-center" style="width: 50px; height: 50px;">
+                                            <i class="fa-solid fa-box-open text-secondary pt-2 fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <span class="fw-bold text-dark fs-5">{{ d.item }}</span>
+                                            <br>
+                                            <span class="badge bg-light text-dark border mt-1">Qty: {{ d.quantity }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {% if d.status == 'Pending Pickup' %}
+                                        <span class="badge bg-warning text-dark border border-warning">
+                                            <i class="fa-regular fa-clock"></i> Waiting for Driver
+                                        </span>
+                                    {% elif d.status == 'Driver Assigned' %}
+                                        <div class="driver-alert shadow-sm">
+                                            <i class="fa-solid fa-truck-fast"></i> <strong>Driver Arrived!</strong><br>
+                                            {% if d.delivery and d.delivery[0] %}
+                                                <small class="text-muted">{{ d.delivery[0].driver }} ({{ d.delivery[0].vehicle }})</small>
+                                            {% else %}
+                                                <small class="text-muted">Vehicle approaching...</small>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <a href="/confirm_pickup/{{ d.id }}" class="btn btn-sm btn-success w-100 shadow-sm fw-bold">
+                                            <i class="fa-solid fa-handshake"></i> Confirm Handover
+                                        </a>
+
+                                    {% else %}
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill">
+                                            <i class="fa-solid fa-circle-check"></i> Collected
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-parachute-box fa-3x mb-3 opacity-25"></i>
+                                    <p>You haven't made any donations yet.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

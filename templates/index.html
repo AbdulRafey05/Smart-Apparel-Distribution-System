@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* --- ANIMATIONS --- */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- HERO SECTION (Top Banner) --- */
+    .hero-section {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* Deep Professional Blue */
+        color: white;
+        padding: 100px 20px 140px 20px; /* Added extra padding at bottom for cards overlap */
+        border-radius: 0 0 50px 50px; /* Stylish Curved Bottom */
+        margin-bottom: 0; /* Removed margin so cards sit correctly */
+        box-shadow: 0 10px 30px rgba(30, 60, 114, 0.3);
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    /* Background Pattern */
+    .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 20%),
+                          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 20%);
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 20px;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        font-weight: 300;
+        opacity: 0.9;
+        max-width: 700px;
+        margin: 0 auto 40px auto;
+        line-height: 1.6;
+    }
+
+    /* --- UNIFIED BUTTON STYLE --- */
+    .hero-btn {
+        padding: 15px 45px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        border: none;
+        background: white;
+        color: #1e3c72;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        display: inline-block;
+        text-decoration: none;
+    }
+    
+    .hero-btn:hover {
+        background: #0d2550; /* Dark Blue */
+        color: white; 
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    /* --- FEATURE CARDS --- */
+    .feature-card {
+        border: none;
+        border-radius: 20px;
+        background: white;
+        padding: 40px 30px;
+        height: 100%;
+        text-align: center;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        position: relative;
+        z-index: 10;
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .icon-box {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 35px;
+        margin: 0 auto 25px auto;
+        transition: transform 0.3s;
+    }
+    
+    .feature-card:hover .icon-box {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    /* Colors for Icons */
+    .icon-donate { background: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+    .icon-truck { background: rgba(25, 135, 84, 0.1); color: #198754; }
+    .icon-heart { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+
+</style>
+
+<div class="hero-section text-center">
+    <div class="container position-relative">
+        <h1 class="hero-title">Connecting Hearts with Needs</h1>
+        <p class="hero-subtitle">
+            A digital logistics platform bridging the gap between surplus and scarcity.
+            We ensure every donation reaches the right person, at the right time.
+        </p>
+
+        <div class="d-flex justify-content-center gap-3">
+            {% if not session.get('user_id') %}
+                <a href="/register" class="btn hero-btn">
+                    <i class="fa-solid fa-user-plus"></i> Join Now
+                </a>
+                <a href="/login" class="btn hero-btn">
+                    Login
+                </a>
+            {% else %}
+                <a href="/{{ session['role'] }}_dashboard" class="btn hero-btn">
+                    Go to Dashboard <i class="fa-solid fa-arrow-right ms-2"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5" style="margin-top: -100px; padding-bottom: 50px;">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card feature-card">
+                <div class="icon-box icon-donate">
+                    <i class="fa-solid fa-shirt"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Donate Easily</h4>
+                <p class="text-muted">
+                    List your items in seconds. Upload photos and schedule a pickup from your doorstep.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card">
+                <div class="icon-box icon-truck">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Smart Logistics</h4>
+                <p class="text-muted">
+                    Our system assigns drivers instantly. Track donations from your home to our warehouse.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card">
+                <div class="icon-box icon-heart">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Verified Impact</h4>
+                <p class="text-muted">
+                    We ensure transparency. See exactly when your donation is received by a person in need.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* --- HEADER SECTION --- */
+    .dashboard-header {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); /* Fresh Teal/Green */
+        color: white;
+        padding: 80px 20px 100px 20px; /* Extra padding bottom for overlap */
+        border-radius: 0 0 50px 50px;
+        margin-bottom: -60px; /* Pulls content UP */
+        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        text-align: center;
+        position: relative;
+    }
+
+    /* --- CARDS & FORMS --- */
+    .glass-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: none;
+        overflow: hidden;
+        margin-bottom: 30px;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .card-header-custom {
+        background: #f8f9fa;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        font-weight: 700;
+        color: #333;
+    }
+
+    /* Form Inputs */
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        background-color: #fcfcfc;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #38ef7d;
+        box-shadow: 0 0 0 0.2rem rgba(56, 239, 125, 0.25);
+    }
+    
+    /* Submit Button */
+    .btn-submit {
+        background: linear-gradient(45deg, #11998e, #38ef7d);
+        border: none;
+        color: white;
+        font-weight: bold;
+        padding: 12px;
+        border-radius: 10px;
+        transition: all 0.3s;
+        width: 100%;
+    }
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+    }
+
+    /* --- TABLE STYLING --- */
+    .table thead th {
+        background-color: #f1f3f5;
+        color: #555;
+        font-weight: 600;
+        border: none;
+    }
+    .table td {
+        vertical-align: middle;
+        padding: 15px;
+    }
+
+    /* Status Badges */
+    .badge-custom {
+        padding: 8px 12px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .status-pending { background-color: #fff3cd; color: #856404; }
+    .status-approved { background-color: #cff4fc; color: #055160; } /* On the Way */
+    .status-received { background-color: #d1e7dd; color: #0f5132; }
+    .status-rejected { background-color: #f8d7da; color: #721c24; }
+
+    /* Stats Cards (Mini) */
+    .stat-box {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border-radius: 15px;
+        padding: 15px 25px;
+        display: inline-block;
+        margin: 0 10px;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="dashboard-header">
+    <h1 class="fw-bold"><i class="fa-solid fa-hand-holding-heart me-2"></i> Beneficiary Dashboard</h1>
+    <p class="opacity-90 mb-4">Request the essentials you need, and we'll deliver them to your door.</p>
+    
+    <div class="d-flex justify-content-center">
+        <div class="stat-box">
+            <h3 class="fw-bold m-0">{{ requests|length }}</h3>
+            <small>Total Requests</small>
+        </div>
+        <div class="stat-box">
+            <h3 class="fw-bold m-0">{{ requests|selectattr("status", "equalto", "Received by User")|list|length }}</h3>
+            <small>Received</small>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="glass-card">
+                <div class="card-header-custom">
+                    <i class="fa-solid fa-pen-to-square text-success me-2"></i> Make a Request
+                </div>
+                <div class="p-4">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">ITEM NEEDED</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-shirt text-muted"></i></span>
+                                <select name="item" class="form-select">
+                                    <option>T-Shirt</option>
+                                    <option>Jeans</option>
+                                    <option>Blanket</option>
+                                    <option>Jackets</option>
+                                    <option>Shoes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">QUANTITY</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-layer-group text-muted"></i></span>
+                                <input type="number" name="quantity" class="form-control" min="1" max="5" value="1" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">DELIVERY ADDRESS</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-location-dot text-muted"></i></span>
+                                <input type="text" name="address" class="form-control" placeholder="House #, Street, City" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-muted">PHONE</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-phone text-muted"></i></span>
+                                <input type="text" name="phone" class="form-control" placeholder="0300-1234567" required>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-submit shadow">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="glass-card h-100">
+                <div class="card-header-custom">
+                    <i class="fa-solid fa-list-check text-primary me-2"></i> My Requests Status
+                </div>
+                <div class="p-0 table-responsive"> <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Item Details</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in requests %}
+                            <tr>
+                                <td class="ps-4">
+                                    <span class="fw-bold text-dark">{{ r.item }}</span> 
+                                    <span class="badge bg-light text-dark border ms-1">x{{ r.quantity }}</span>
+                                    <br>
+                                    <small class="text-muted"><i class="fa-solid fa-location-arrow"></i> {{ r.address }}</small>
+                                </td>
+                                <td>
+                                    {% if r.status == 'Pending' %}
+                                        <span class="badge-custom status-pending">Pending</span>
+                                    {% elif r.status == 'Approved' or r.status == 'Driver Assigned' %}
+                                        <span class="badge-custom status-approved"><i class="fa-solid fa-truck-fast"></i> On the Way</span>
+                                    {% elif r.status == 'Received by User' %}
+                                        <span class="badge-custom status-received"><i class="fa-solid fa-check-circle"></i> Received</span>
+                                    {% else %}
+                                        <span class="badge-custom status-rejected">{{ r.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if r.status == 'Approved' or r.status == 'Driver Assigned' %}
+                                        <a href="/confirm_receipt/{{ r.id }}" class="btn btn-sm btn-success rounded-pill fw-bold">
+                                            <i class="fa-solid fa-check"></i> Confirm Receipt
+                                        </a>
+                                    {% elif r.status == 'Received by User' %}
+                                        <span class="text-success small fw-bold">Completed</span>
+                                    {% else %}
+                                        <span class="text-muted small">--</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-box-open fa-2x mb-2 opacity-50"></i><br>
+                                    No requests found. Start by making one!
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
